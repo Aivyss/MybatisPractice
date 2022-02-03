@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Mapper.MemberMapper">
+  <!-- foreach 태그를 이용해 동적쿼리의 생성 1 -->
+  <insert id="createMembers">
+    <foreach collection="members" item="member" index="idx" separator=";">
+      INSERT INTO MEMBER (
+        MEMBER_ID
+        , NAME
+        , COMPANY_ID
+      ) VALUES (
+        #{member.MEMBER_ID}
+        , #{member.NAME}
+        , #{member.COMPANY_ID}
+      )
+    </foreach>
+  </insert>
+
+  <!-- foreach 태그를 이용해 동적쿼리의 생성 2 및 복수개의 인풋 파라미터 -->
+  <select id="selectMembersById" resultType="Entity.Member">
+    SELECT
+        MEMBER_ID
+        , NAME
+        , COMPANY_ID
+    FROM
+        MEMBER
+    WHERE 1 = 1
+        AND MEMBER_ID IN
+        <foreach collection="memberIds" item="id" open="(" close=")" separator=",">
+          #{id}
+        </foreach>
+        AND COMPANY_ID = #{companyId}
+  </select>
+</mapper>
